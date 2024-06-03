@@ -1,0 +1,7 @@
+pydantic
+pymilvus
+pinecone_text
+langchain_openai
+langgraph
+langchain
+Pillow
