@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 class MilvusStoreWithClient:
-    def __init__(self, client_uri: str = "http://localhost:19530", csv_file_path: str = "data/products.csv"):
+    def __init__(self, client_uri: str = "http://localhost:19530"):
         self.client = MilvusClient(uri=client_uri)
         self.bm25 = BM25Encoder()
         self.logger = logging.getLogger(__name__)
@@ -30,9 +30,10 @@ class MilvusStoreWithClient:
         return index_params
 
     def bm25_encode(self, text):
+
         list_sparse = self.bm25.encode_documents(text)
         dict_sparse = dict(zip(list_sparse['indices'], list_sparse['values']))
-        # print("dict sparse: ",dict_sparse)
+        print("dict sparse: ",dict_sparse)
         return dict_sparse
     
 
@@ -58,27 +59,51 @@ class MilvusStoreWithClient:
         logging.info(f"Creating collection: {collection_name}")
         self.make_collection(collection_name)
 
-    # def insert_data_from_csv(self, collection_name: str, hybrid:bool = False):
-    #     prepared_data = self.csv_loader.prepare_data(hybrid=hybrid)
-    #     self.logger.info(f"Inserting {len(prepared_data)} records into collection")
-    #     self.client.insert(collection_name=collection_name, data=prepared_data)
-    #     time.sleep(5000)
-    #     return 
 
+    def create_vs_with_testdata(self, collection_name: str, data: list[dict]):
+        self.make_collection(collection_name)
+        print("Collection created")
+        self.insert_data(collection_name, data)
+        print("Data inserted")
+        return 
 
+    def insert_data(self, collection_name: str, data: list[dict]):
+        '''
+        prepared_data: list of dictionaries with keys corresponding to the fields in the collection
+
+        fields: id, content, person, category, creation_date...
+        '''
+        #For testing purposes...
+        self.bm25.fit([ele["content"] for ele in data])
+        for row in data:
+            for column in row:
+                if column == "content":
+                    row["embedding"] = EmbeddingGenerator().generate(row[column])
+                    row["sparse_vector"] = self.bm25_encode(row[column])
+                    break
+
+        self.logger.info(f"Inserting {len(data)} records into collection")
+        self.client.insert(collection_name=collection_name, data=data)
+        return 
+
+    
     def hybrid_search(self,        
         collection_name: str,
         query: list = None,
         fixed_filter: str = None,
         limit: int = 2,
         output_fields: list = None):
+        self.bm25.fit([query])
 
         connections.connect(alias="default")
         collection = Collection(name=collection_name)
+
+        if output_fields is None:
+            output_fields=["id", "content", "person", "category", "creation_date"]
         # collection.load()
-        # print(len(EmbeddingGenerator().generate(query)))
         res = collection.hybrid_search(
-            output_fields=["id", "price","cat_level_4", "cat_level_5", "url","specification","all_variants"],
+            filter =fixed_filter,
+            output_fields=output_fields,
             reqs=[
                 AnnSearchRequest(
                     data=[EmbeddingGenerator().generate(query)], ## Dense vectors
@@ -103,28 +128,26 @@ class MilvusStoreWithClient:
 
 if __name__ == "__main__":
     # creating collection
-    COLLECTION_NAME_HYBRID = "hybrid40_morele_pl"
-    COLLECTION_NAME = "new_morele_pl"
-    milvus_store = MilvusStoreWithClient(csv_file_path="data/products.csv")
+    milvus_store = MilvusStoreWithClient()
     # use only when you want to create a new collection with the same name (data clearing)
     # milvus_store.recreate_collection(COLLECTION_NAME)
-    # use otherwise
-    # | for different websites it would be good idea to create a new collection for each website
-    # milvus_store.make_collection(COLLECTION_NAME)
-    # insert new data but be careful to no create too many duplicates
-    # milvus_store.insert_data_from_csv(COLLECTION_NAME)
-
 
     #KLASYCZNA
     # milvus_store.make_collection(COLLECTION_NAME)
-    # milvus_store.insert_data_from_csv(COLLECTION_NAME, hybrid=False)
-    # searched_values = milvus_store.search(COLLECTION_NAME, query="szukam zabawek dla dziecka")
     # print( "searched values: ", searched_values)
 
-    #HYBRYDA
-    # milvus_store.make_collection(COLLECTION_NAME_HYBRID)   
-    # milvus_store.insert_data_from_csv(COLLECTION_NAME_HYBRID, hybrid=True)
-    searched_values = milvus_store.hybrid_search(COLLECTION_NAME_HYBRID, query="szukam zabawek dla dziecka")
-    print( "searched values: ", searched_values)
 
-    # print(milvus_store.describe_collection(COLLECTION_NAME_HYBRID))
+    # ---- TUTAJ BYŁO
+    # searched_values = milvus_store.hybrid_search(COLLECTION_NAME_HYBRID, query="szukam zabawek dla dziecka")
+    # print( "searched values: ", searched_values)
+
+    # ---------------- TESTING
+
+    # print(milvus_store.describe_collection("test"))
+    datax = [{"content": "I love pizza", "person": "John", "category": "food", "creation_date": "2024-06-01"},]
+    datax2 = [{"content": "I was on Podsiadło concert", "person": "John", "category": "event", "creation_date": "2024-06-01"},]
+    # milvus_store.create_vs_with_testdata(collection_name="test",data=datax)
+    # milvus_store.insert_data(collection_name="test",data=datax2)
+
+
+    milvus_store.hybrid_search("test", query="los", fixed_filter="category == 'event'")
