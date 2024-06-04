@@ -5,3 +5,4 @@ langchain_openai
 langgraph
 langchain
 Pillow
+tiktoken

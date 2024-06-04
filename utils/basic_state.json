@@ -1,0 +1,123 @@
+{
+  "messages": [
+    {
+      "content": "According to documents that I've sent, how many countries where listed in there? Also find out my age.",
+      "id": "6e815f66-5e60-4531-9714-e4c0883269a5",
+      "type": "HumanMessage"
+    },
+    {
+      "content": "",
+      "additional_kwargs": {
+        "tool_calls": [
+          {
+            "id": "call_zfDc0R8A8rnqpvjAuVvte4V2",
+            "function": {
+              "arguments": "{}",
+              "name": "retrieve_documents"
+            },
+            "type": "function"
+          },
+          {
+            "id": "call_4nlIalkjpPj6eabhMUpoXgrZ",
+            "function": {
+              "arguments": "{}",
+              "name": "retrieve_facts"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "response_metadata": {
+        "token_usage": {
+          "completion_tokens": 39,
+          "prompt_tokens": 525,
+          "total_tokens": 564
+        },
+        "model_name": "gpt-3.5-turbo",
+        "system_fingerprint": null,
+        "finish_reason": "tool_calls",
+        "logprobs": null
+      },
+      "id": "run-890f2168-3625-4fd1-80f3-367beb212416-0",
+      "tool_calls": [
+        {
+          "name": "retrieve_documents",
+          "args": {},
+          "id": "call_zfDc0R8A8rnqpvjAuVvte4V2"
+        },
+        {
+          "name": "retrieve_facts",
+          "args": {},
+          "id": "call_4nlIalkjpPj6eabhMUpoXgrZ"
+        }
+      ],
+      "type": "AIMessage"
+    },
+    {
+      "content": "Documents retrieved, there are 3 countries in the world.",
+      "name": "retrieve_documents",
+      "id": "aa67c465-b77d-45b0-a543-4edac825b6fd",
+      "tool_call_id": "call_zfDc0R8A8rnqpvjAuVvte4V2",
+      "type": "ToolMessage"
+    },
+    {
+      "content": "Facts retrieved",
+      "name": "retrieve_facts",
+      "id": "f3cbf929-2e12-41ea-b460-cff6d7c9fdde",
+      "tool_call_id": "call_4nlIalkjpPj6eabhMUpoXgrZ",
+      "type": "ToolMessage"
+    },
+    {
+      "content": "Based on the documents you've sent, there were 3 countries listed. Now, let me find out your age based on the facts retrieved.",
+      "additional_kwargs": {
+        "tool_calls": [
+          {
+            "id": "call_ATsvbpd4wiCd3JlV063ySdoz",
+            "function": {
+              "arguments": "{}",
+              "name": "retrieve_facts"
+            },
+            "type": "function"
+          }
+        ]
+      },
+      "response_metadata": {
+        "token_usage": {
+          "completion_tokens": 41,
+          "prompt_tokens": 592,
+          "total_tokens": 633
+        },
+        "model_name": "gpt-3.5-turbo",
+        "system_fingerprint": null,
+        "finish_reason": "tool_calls",
+        "logprobs": null
+      },
+      "id": "run-9d1128b6-5ccf-4ddd-b10a-d6b6b494a9f8-0",
+      "tool_calls": [
+        {
+          "name": "retrieve_facts",
+          "args": {},
+          "id": "call_ATsvbpd4wiCd3JlV063ySdoz"
+        }
+      ],
+      "type": "AIMessage"
+    },
+    {
+      "content": "Facts retrieved",
+      "name": "retrieve_facts",
+      "id": "3f01af36-071f-4a75-85a8-e00c1b0dd01e",
+      "tool_call_id": "call_ATsvbpd4wiCd3JlV063ySdoz",
+      "type": "ToolMessage"
+    }
+  ],
+  "friends_family": [],
+  "basic_user_info": {
+    "name": "",
+    "surname": "",
+    "age": "",
+    "current_partner": "",
+    "current_work": "",
+    "current_location": ""
+  },
+  "weekly_events": []
+}

@@ -4,14 +4,28 @@ from langgraph.graph.message import AnyMessage, add_messages
 
 
 from typing import Annotated, TypedDict, Literal
+from pydantic import BaseModel, Field
 
-from friendLogic.agents.agent import Agent
+from friendLogic.agents.friend_agent import Agent
 from friendLogic.prompts.prompts import main_agent_prompt
 from friendLogic.tools import *
 from langgraph.checkpoint.sqlite import SqliteSaver
+import sqlite3
+
+class BasicUserInfo(TypedDict):
+    name: str
+    surname: str
+    age: str
+    current_partner: str
+    current_work: str
+    current_location: str
+
 
 class State(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages]
+    friends_family: Annotated[list[str], add_messages] # list of names of friends and family
+    basic_user_info: BasicUserInfo # dictionary containing basic user information like name, surname, age, current_partner, current_work, current_location
+    weekly_events: Annotated[list[str], add_messages] #List of important events from last week
 
 class talkGraph:
     def __init__(self):
@@ -36,7 +50,6 @@ class talkGraph:
 
     def builder(self):
         graph = StateGraph(State)
-
         graph.add_node("main_agent",self.agent)
         graph.set_entry_point("main_agent")
 
@@ -53,4 +66,4 @@ class talkGraph:
 
         graph.add_edge("memory_retriever","main_agent")
 
-        return graph.compile(checkpointer=SqliteSaver.from_conn_string(":memory:"))
+        return graph.compile(checkpointer=SqliteSaver.from_conn_string("checkpoints.sqlite"))

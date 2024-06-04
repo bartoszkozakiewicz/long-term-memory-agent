@@ -16,7 +16,20 @@ class Agent:
     def __call__(self, state):
         # print("State in main agent: ",state)
         last_message = state["messages"]
+        print("STAN: ", state)
+
         
         result = self.runnable.invoke(state)
-        print("Result in main agent: ",result)
+
+        if not state["basic_user_info"]:
+            basic_user_info = {
+                "name": "",
+                "surname": "",
+                "age": "",
+                "current_partner": "",
+                "current_work": "",
+                "current_location": ""
+            }
+            return {"messages": result, "basic_user_info": basic_user_info}
+
         return {"messages": result}

@@ -1,10 +1,11 @@
 from friendLogic.graph.graph import talkGraph
 from uuid import uuid4
+from friendLogic.utils import print_event
 
 def main(config: dict[str, dict[str, str]]):
 
     graph = talkGraph().builder()
-    print("Graph built")
+    printed = set()
 
     q1 =  "Hello how are you today?"
     q2 =  "Do you know how old am I?"
@@ -13,7 +14,7 @@ def main(config: dict[str, dict[str, str]]):
 
     events = graph.stream({"messages":("user",q4)},config=config, stream_mode="values") # config=config,
     for event in events:
-        print("Event Occured: \n", event)
+        print_event(event,printed)
 
 if __name__ == "__main__":
     config = {
