@@ -6,3 +6,6 @@ langgraph
 langchain
 Pillow
 tiktoken
+fastapi
+uvicorn
+mysql-connector-python

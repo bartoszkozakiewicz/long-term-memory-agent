@@ -7,7 +7,7 @@ class FutureRetriever:
     @staticmethod
     @tool
     def future_retriever(self):
-        """Fetch relevant information about your friends future plans only. Use this when user is asking about some future events that he planned. For example some future events, trips, meetings, etc.
+        """Fetch relevant information about your future plans only. Use this when user is asking about some future events that he planned. For example some future events, trips, meetings, etc.
 
         Returns:
             A list of strings containing relevant information about user's planned events etc.

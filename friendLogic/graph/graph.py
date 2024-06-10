@@ -7,7 +7,7 @@ from typing import Annotated, TypedDict, Literal
 from pydantic import BaseModel, Field
 
 from friendLogic.agents.friend_agent import Agent
-from friendLogic.prompts.prompts import main_agent_prompt
+from friendLogic.prompts.agent_prompts import main_agent_prompt
 from friendLogic.tools import *
 from langgraph.checkpoint.sqlite import SqliteSaver
 import sqlite3

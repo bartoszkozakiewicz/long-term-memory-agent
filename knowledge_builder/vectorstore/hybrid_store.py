@@ -4,7 +4,7 @@ from random import random
 
 from pinecone_text.sparse import BM25Encoder
 from pymilvus import DataType, MilvusClient, Collection, AnnSearchRequest, RRFRanker, connections
-from embedding_generator import EmbeddingGenerator
+from knowledge_builder.embedding_generator import EmbeddingGenerator
 
 logging.basicConfig(level=logging.INFO)
 
@@ -129,18 +129,6 @@ class MilvusStoreWithClient:
 if __name__ == "__main__":
     # creating collection
     milvus_store = MilvusStoreWithClient()
-    # use only when you want to create a new collection with the same name (data clearing)
-    # milvus_store.recreate_collection(COLLECTION_NAME)
-
-    #KLASYCZNA
-    # milvus_store.make_collection(COLLECTION_NAME)
-    # print( "searched values: ", searched_values)
-
-
-    # ---- TUTAJ BYŁO
-    # searched_values = milvus_store.hybrid_search(COLLECTION_NAME_HYBRID, query="szukam zabawek dla dziecka")
-    # print( "searched values: ", searched_values)
-
     # ---------------- TESTING
 
     # print(milvus_store.describe_collection("test"))

@@ -11,8 +11,9 @@ def main(config: dict[str, dict[str, str]]):
     q2 =  "Do you know how old am I?"
     q3 =  "According to documents that I've sent, how many countries where listed in there?"
     q4 =  "According to documents that I've sent, how many countries where listed in there? Also find out my age."
+    q5 =  "I was with Michal on networking event today."
 
-    events = graph.stream({"messages":("user",q4)},config=config, stream_mode="values") # config=config,
+    events = graph.stream({"messages":("user",q5)},config=config, stream_mode="values") # config=config,
     for event in events:
         print_event(event,printed)
 
