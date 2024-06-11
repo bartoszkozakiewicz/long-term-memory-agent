@@ -4,7 +4,7 @@ from random import random
 
 from pinecone_text.sparse import BM25Encoder
 from pymilvus import DataType, MilvusClient, Collection, AnnSearchRequest, RRFRanker, connections
-from knowledge_builder.embedding_generator import EmbeddingGenerator
+from knowledger.vectorstore.embedding_generator import EmbeddingGenerator
 
 logging.basicConfig(level=logging.INFO)
 

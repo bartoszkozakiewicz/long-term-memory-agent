@@ -3,6 +3,7 @@ from typing import Optional
 
 class SQLDatabase:
 
+    # ================== RETRIEVE FROM DATABASE ==================
 
     @classmethod
     def _select_relationship_info(cls,person1_name:Optional[str]=None, person2_name:Optional[str]=None, type:Optional[str]=None):
@@ -85,23 +86,24 @@ class SQLDatabase:
                     first_name:Optional[str]=None, 
                     last_name:Optional[str]=None, 
                     called:Optional[str]=None, 
-                    gender:Optional[str]=None,
-                    category:Optional[str]=None):
-        '''In the future category probably will be a list of categories, but for now it is a string.'''
+                    gender:Optional[str]=None
+                    ):
+        ''''''
         result = SQLDatabase._select_basic_info(first_name, last_name, called, gender)
         return result
     
 
+
+    # ================== UPDATING DATABASE ==================
     def update_data(self, table_name, update_values, condition):
-            # Update usage example
-            update_values = {
-                'salary': 60000,
-                'to_date': '2024-12-31'
-            }
-            condition = {
-                'emp_no': 1,
-                'from_date': '2020-01-01'
-            }
+            # --- Update usage example
+                # update_values = {
+                #     'age': 30
+                # }
+                # condition = {
+                #     'name': 'John', # Probably it will be handled using the person_id
+                # }
+
             with Connector() as cursor:
                 set_clause = ", ".join([f"{k} = %({k})s" for k in update_values.keys()])
                 where_clause = " AND ".join([f"{k} = %({k})s" for k in condition.keys()])
@@ -110,21 +112,48 @@ class SQLDatabase:
                 # Combine the update_values and condition dictionaries for the parameters
                 params = {**update_values, **condition}
                 cursor.execute(update_query, params)
+                print("Executed update query")
+                
 
+
+    # ================== INSERT INTO DATABASE ==================
     @staticmethod
     def insert_data(table_name, data):
-        with Connector() as cursor:
-            add_salary = ("INSERT INTO salaries "
-              "(emp_no, salary, from_date, to_date) "
-              "VALUES (%(emp_no)s, %(salary)s, %(from_date)s, %(to_date)s)")
+        ''' For example when adding some previously unknown person to the database or relationship between two people'''
 
-            data_salary = {
-            'emp_no': "test",
-            'salary': 50000,
-            'from_date': "test",
-            'to_date': "tetetest",
-            }
-            cursor.execute(add_salary, data_salary)
+        # --- Example of usage
+            # data = {
+            #     'name': "John",
+            #     'surname': "Bravo",
+            #     'called': "xyz",
+            #     'age': 25,
+            # }
+        
+        required_keys: list[str] = []
+        if table_name == "Person":
+            required_keys = ['name', 'surname', 'called', 'age']
+            for key in required_keys:
+                if key not in data:
+                    data[key] = ""
+
+        if table_name == "Relationships":
+            required_keys = ['person1_id', 'person2_id', 'relationship_type', 'relationship_description']
+            for key in required_keys:
+                if key not in data:
+                    data[key] = ""
+
+        assert len(required_keys) == 0, "Table name not recognized"
+
+        insert_data = ", ".join([f"{k} = %({k})s" for k in data.keys()])
+
+        with Connector() as cursor:
+            add_data = (
+                f"INSERT INTO {table_name} " # Person or Relationships ...
+                f"{tuple(required_keys)} "
+                f"VALUES ({insert_data})"
+            )
+            
+            cursor.execute(add_data, data)
 
 
 if __name__ =="__main__":

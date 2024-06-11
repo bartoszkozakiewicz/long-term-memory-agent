@@ -5,7 +5,7 @@ from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 
 from friendLogic.prompts.tools_prompts import facts_keys_retriever_prompts
-from knowledge_builder.vectorstore.hybrid_store import MilvusStoreWithClient
+from knowledger.vectorstore.hybrid_store import MilvusStoreWithClient
 
 import os
 from dotenv import load_dotenv
